@@ -78,22 +78,50 @@ namespace WindowsFormsApp1
             }
             GetInfo();
             GetTicker();
+            //MatchCheck();
         }
+
+        private void MatchCheck()
+        {
+            var TempName = "";
+            Task.Factory.StartNew(() =>
+            {
+                while (true)
+                {
+                    var highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
+                    if (TempName != highest.Name)
+                    {
+                        TempName = highest.Name;
+                        var msg = string.Format("最高價：{0}", TempName);
+                        ListMsg.Insert(0, new Memo { Msg = msg });
+                        var sourceMemo = new BindingSource();
+                        sourceMemo.DataSource = ListMsg;
+                        SysHelper.Print(dataGridViewMemo, sourceMemo);
+                    }
+                    Thread.Sleep(1000);
+                }
+            });
+        }
+
         private void MatchExchange()
         {
             Task.Factory.StartNew(() =>
             {
+                var TempName = "";
                 while (bExchange)
                 {
                     var lowest = ListVal.OrderBy(x => x.Ask).FirstOrDefault();
                     var highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
                     var Askval = lowest.Ask * (1 + (lowest.Fee / 100));
                     var Bidval = highest.Bid * (1 - (highest.Fee / 100));
-                    if (Askval < Bidval)
+                    if (TempName != highest.Name)
                     {
-                        //獲利
-                        var Profit = (Bidval * MinQuantity) - (Askval * MinQuantity);
-                        string[] argsData = new string[] {
+                        if (Askval < Bidval)
+                        {
+                            TempName = highest.Name;
+                            //獲利
+                            var Profit = (Bidval * MinQuantity) - (Askval * MinQuantity);
+                            string[] argsData = new string[] {
                             "測試",
                             highest.Name, //最高賣價交易所
                             Bidval.ToString(), //含手續費賣價
@@ -105,13 +133,14 @@ namespace WindowsFormsApp1
                             Profit.ToString(),  //獲利
                             MinQuantity.ToString()//交易數量
                             };
-                        var msg = string.Format("{5} - {0} 配對完成： {1}的Bid - {2} 和 {3}的Ask - {4}   原Bid {6}   原Ask {7}   ;交易數量：{9} BTC  ＞獲利 {8} USDT", argsData);
-                        ListMsg.Insert(0, new Memo { Msg = msg });
-                        var sourceMemo = new BindingSource();
-                        sourceMemo.DataSource = ListMsg;
-                        SysHelper.Print(dataGridViewMemo, sourceMemo);
+                            var msg = string.Format("{5} - {0} 配對完成： {1}的Bid - {2} 和 {3}的Ask - {4}   原Bid {6}   原Ask {7}   ;交易數量：{9} BTC  ＞獲利 {8} USDT", argsData);
+                            ListMsg.Insert(0, new Memo { Msg = msg });
+                            var sourceMemo = new BindingSource();
+                            sourceMemo.DataSource = ListMsg;
+                            SysHelper.Print(dataGridViewMemo, sourceMemo);
+                        }
+                        Thread.Sleep(1000);
                     }
-                    Thread.Sleep(1000);
                 }
             });
         }

@@ -67,7 +67,11 @@ namespace HuobiApi
                             if (SocketResult.Status.Equals("error"))
                             {
                                 SocketResult.Error = JsonConvert.DeserializeObject<ErrorMessage>(result);
-                                OnError(sender, SocketResult.Error);
+                                if (OnError != null)
+                                {
+                                    OnError(sender, SocketResult.Error);
+                                }
+                                   
                             }
                         }
                         else
@@ -95,7 +99,11 @@ namespace HuobiApi
             WebSocket.Error += new EventHandler<SuperSocket.ClientEngine.ErrorEventArgs>((sender, e) =>
             {
                 error = new ErrorMessage() { Message = e.Exception.Message };
-                OnError(sender, error);
+                if (OnError != null)
+                {
+                    OnError(sender, error);
+                }
+
             });
 
             WebSocket.Closed += new EventHandler((sender, e) =>
