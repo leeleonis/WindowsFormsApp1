@@ -101,6 +101,13 @@
     <Compile Include="HitbtcApi\Objects\SocketData.cs" />
     <Compile Include="HitbtcApi\Objects\SocketResult.cs" />
     <Compile Include="HitbtcApi\Objects\TickerData.cs" />
+    <Compile Include="HoubiApi\HoubiClient.cs" />
+    <Compile Include="HoubiApi\Objects\ErrorMessage.cs" />
+    <Compile Include="HoubiApi\Objects\HoubiApiResult.cs" />
+    <Compile Include="HoubiApi\Objects\PingPong.cs" />
+    <Compile Include="HoubiApi\Objects\SocketData.cs" />
+    <Compile Include="HoubiApi\Objects\SocketResult.cs" />
+    <Compile Include="HoubiApi\Objects\TickerData.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

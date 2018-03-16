@@ -15,17 +15,21 @@ namespace WindowsFormsApp1
         /// <summary>
         /// 狀態
         /// </summary>
-        public string Status { get; set; }
+        public string StatusBid { get; set; }
+        /// <summary>
+        /// 狀態
+        /// </summary>
+        public string StatusAsk { get; set; }
         /// <summary>
         /// 幣別
         /// </summary>
         public string Currency { get; set; }
         /// <summary>
-        /// 買入價
+        /// 買入價(最高可賣的價)
         /// </summary>
         public decimal Bid { get; set; }
         /// <summary>
-        /// 賣出價
+        /// 賣出價(最低可買的價)
         /// </summary>
         public decimal Ask { get; set; }
         /// <summary>

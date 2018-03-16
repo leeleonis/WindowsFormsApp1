@@ -9,7 +9,8 @@ using System.Collections.Generic;
 using System.Linq;
 using WebSocket4Net;
 
-namespace WindowsFormsApp1
+
+namespace Hitbtc
 {
 
     class HitbtcSocketClient : IDisposable
