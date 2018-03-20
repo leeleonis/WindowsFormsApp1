@@ -16,21 +16,28 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Hitbtc;
 using HuobiApi;
+using GateioApi;
+using CoinexApi;
 using WebSocket4Net;
 using System.IO;
 using System.IO.Compression;
 using System.Security.Authentication;
+using System.Net;
+using System.Net.Http;
+using GateioApi.Objects;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        public static decimal Ratio = 1;
         public static decimal TempOder = 0;
         public static bool bExchange = false;
         public decimal MinQuantity = 0.5M;
         List<ViewData> ListVal = new List<ViewData>();
         List<Info> ListInfo = new List<Info>();
         List<Memo> ListMsg = new List<Memo>();
+        List<ExchangeTurnover> ListTurn = new List<ExchangeTurnover>();
         public string Banapi = "h5TWlHtbZBKdpoyXPAoKmYlaomjldPUqdpPXbM9GJPzTnP9fHXBjeALSs8Bpmafy";
         public string BanSecret = "nBaIuHv1pTXBC2bz5x8fF8nfcudcpp0jLQsQgCcS1kxMEJzxjWo3hOFnUNIcYg40";
         public string Hitapi = "c5fcf2185b0d96905e523b2e7c621ebc";
@@ -48,9 +55,11 @@ namespace WindowsFormsApp1
             InitializeComponent();
             Form.CheckForIllegalCrossThreadCalls = false;
             //報價
-            ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "BTCUSDT" });
-            //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "BTCUSD" });
-            ListVal.Add(new ViewData { Name = "Huobi", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "btcusdt" });
+            ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "BTCUSDT", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "BTCUSD", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "Huobi", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "Gateio", Bid = 0, Ask = 0, Fee = 0.2M, Currency = "btc_usdt", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "Coinex", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHUSDT" });
@@ -65,39 +74,105 @@ namespace WindowsFormsApp1
             // ListInfo.Add(new Info { Name = "總量", Status = "OK", BTC = 0, USDT = 0 });
             //BanFee = 0.1M;
             //HitFee = 0.1M;
+            dataGridViewMoney.AutoGenerateColumns = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            var p = 200m;
-            for (int i = 0; i < 100; i++)
-            {
-                p *= 1 + 0.012m;
-                Console.Write(i.ToString("00") + ":");
-                Console.WriteLine(p);
-            }
+            //var p = 200m;
+            //for (int i = 0; i < 100; i++)
+            //{
+            //    p *= 1 + 0.012m;
+            //    Console.Write(i.ToString("00") + ":");
+            //    Console.WriteLine(p);
+            //}
             GetInfo();
             GetTicker();
             //MatchCheck();
         }
-
+        /// <summary>
+        /// 比價差
+        /// </summary>
         private void MatchCheck()
         {
-            var TempName = "";
             Task.Factory.StartNew(() =>
             {
                 while (true)
                 {
-                    var highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
-                    if (TempName != highest.Name)
+                    foreach (var item1 in ListVal)
                     {
-                        TempName = highest.Name;
-                        var msg = string.Format("最高價：{0}", TempName);
-                        ListMsg.Insert(0, new Memo { Msg = msg });
-                        var sourceMemo = new BindingSource();
-                        sourceMemo.DataSource = ListMsg;
-                        SysHelper.Print(dataGridViewMemo, sourceMemo);
+                        foreach (var item2 in ListVal)
+                        {
+                            if (item1.Name!=item2.Name)
+                            {
+                                var Askval = item1.Ask * (1 + (item1.Fee / 100));
+                                var Bidval = item2.Bid * (1 - (item2.Fee / 100));
+                                var TurnVal = ListTurn.Where(x => x.Name1 == item1.Name && x.Name2 == item2.Name);
+                                var Spread = Bidval - Askval;
+                                if (TurnVal.Any())
+                                {
+                                    foreach (var TurnValitem in TurnVal)
+                                    {
+                                        TurnValitem.Spread = Spread;
+                                        if (Spread > 0)
+                                        {
+                                            if (TurnValitem.Status == "-")
+                                            {
+                                                TurnValitem.Status = "+";
+                                                TurnValitem.Turn++;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            if (TurnValitem.Status == "+")
+                                            {
+                                                TurnValitem.Status = "-";
+                                                TurnValitem.Turn++;
+                                            }
+                                        }                                
+                                    }
+                                }
+                                else
+                                {
+                                    var TurnValitem = new ExchangeTurnover();
+                                    ListTurn.Add(TurnValitem);
+                                    TurnValitem.Name1 = item1.Name;
+                                    TurnValitem.Name2 = item2.Name;
+                                    TurnValitem.Spread = Spread;
+                                    TurnValitem.Turn = 0;
+                                    if (Spread > 0)
+                                    {
+                                        TurnValitem.Status = "+";
+                                    }
+                                    else
+                                    {
+                                        TurnValitem.Status = "-";
+                                    }
+                                }
+                            }
+                        }
                     }
+                    //var highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
+                    //if (TempName != highest.Name)
+                    //{
+                    //    TempName = highest.Name;
+                    //    var msg = string.Format("最高價：{0}", TempName);
+                    //    ListMsg.Insert(0, new Memo { Msg = msg });
+                    //    var sourceMemo = new BindingSource();
+                    //    sourceMemo.DataSource = ListMsg;
+                    //    SysHelper.Print(dataGridViewMemo, sourceMemo);
+                    //}
+                    var i = 0;
+                    foreach (var item in ListTurn)
+                    {
+                        var msg = string.Format("交易所：{0}>{1} 價差：{2} ；翻轉次數{3}" ,item.Name1,item.Name2, item.Spread, item.Turn);
+                        ListMsg.Insert(0, new Memo { Msg = msg });
+                    }
+                   
+                    var sourceMemo = new BindingSource();
+                    sourceMemo.DataSource = ListMsg;
+                    SysHelper.Print(dataGridViewMemo, sourceMemo);
                     Thread.Sleep(1000);
                 }
             });
@@ -161,6 +236,108 @@ namespace WindowsFormsApp1
                 {
                     HuobiFun(item);
                 }
+                else if (item.Name == "Gateio")
+                {
+                   GateioFun(item);
+                }
+                else if (item.Name == "Coinex")
+                {
+                    CoinexFun(item);
+                }
+            }
+        }
+
+        private void CoinexFun(ViewData item)
+        {
+            using (var CoinexClinet = new CoinexClinet())
+            {
+                var SocketResult = CoinexClinet.SubscribeTicker(item.Currency, (data) =>
+                {
+                    var Asklist = data.data.Asks;//賣出價
+                    var Bidlist = data.data.Bids;//買入價
+                    var Askitemlist = new List<HuobiApi.Objects.liem>();
+                    var Biditemlist = new List<HuobiApi.Objects.liem>();
+                    foreach (var listitem in Asklist)
+                    {
+                        Askitemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
+                    }
+                    foreach (var listitem in Asklist)
+                    {
+                        Biditemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
+                    }
+                    var Ask = Askitemlist.Max(x => x.price);
+                    var Bid = Biditemlist.Min(x => x.price);
+
+                    if (Ask > item.Ask)
+                    {
+                        item.StatusAsk = "上漲";
+                    }
+                    else
+                    {
+                        item.StatusAsk = "下跌";
+                    }
+                    if (Bid > item.Bid)
+                    {
+                        item.StatusBid = "上漲";
+                    }
+                    else
+                    {
+                        item.StatusBid = "下跌";
+                    }
+                    item.Ask = Ask * Ratio;//賣出價
+                    item.Bid = Bid * Ratio;//買入價
+
+                    var sourceMoney = new BindingSource();
+                    sourceMoney.DataSource = ListVal;
+                    SysHelper.Print(dataGridViewMoney, sourceMoney);
+                });
+            }
+        }
+
+        private void GateioFun(ViewData item)
+        {
+            using (var GateioClinet = new GateioClinet())
+            {
+                var SocketResult = GateioClinet.SubscribeTicker(item.Currency, (data) =>
+                {
+                    var Asklist = data.Asks;//賣出價
+                    var Bidlist = data.Bids;//買入價
+                    var Askitemlist = new List<HuobiApi.Objects.liem>();
+                    var Biditemlist = new List<HuobiApi.Objects.liem>();
+                    foreach (var listitem in Asklist)
+                    {
+                        Askitemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
+                    }
+                    foreach (var listitem in Asklist)
+                    {
+                        Biditemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
+                    }
+                    var Ask = Askitemlist.Max(x => x.price);
+                    var Bid = Biditemlist.Min(x => x.price);
+
+                    if (Ask > item.Ask)
+                    {
+                        item.StatusAsk = "上漲";
+                    }
+                    else
+                    {
+                        item.StatusAsk = "下跌";
+                    }
+                    if (Bid > item.Bid)
+                    {
+                        item.StatusBid = "上漲";
+                    }
+                    else
+                    {
+                        item.StatusBid = "下跌";
+                    }
+                    item.Ask = Ask * Ratio;//賣出價
+                    item.Bid = Bid * Ratio;//買入價
+
+                    var sourceMoney = new BindingSource();
+                    sourceMoney.DataSource = ListVal;
+                    SysHelper.Print(dataGridViewMoney, sourceMoney);
+                });
             }
         }
 
@@ -171,8 +348,8 @@ namespace WindowsFormsApp1
                 var SocketResult = HitbtcSocketClient.SubscribeTicker(item.Currency, (data) =>
                 {
 
-                    var Ask = data.Data.Ask;//賣出價
-                    var Bid = data.Data.Bid;//買入價
+                    var Ask = data.Data.Ask* Ratio;//賣出價
+                    var Bid = data.Data.Bid* Ratio;//買入價
                     if (Ask > item.Ask)
                     {
 
@@ -230,35 +407,41 @@ namespace WindowsFormsApp1
 
                 //});
 
-                var successSymbol = BinanceSocketClient.SubscribeToSymbolTicker(item.Currency, (data) =>
+                var successSymbol = BinanceSocketClient.SubscribeToDepthStream(item.Currency, (data) =>
                 {
                     //dataGridViewMoney.DataSource = null;
+                    try
+                    {
+                        var Ask = data.Asks.Max(x => x.Price) * Ratio;//賣出價
+                        var Bid = data.Bids.Min(x => x.Price) * Ratio;//買入價
+                        if (Ask > item.Ask)
+                        {
 
-                    var Ask = data.BestAskPrice;//賣出價
-                    var Bid = data.BestBidPrice;//買入價
-                    if (Ask > item.Ask)
-                    {
+                            item.StatusAsk = "上漲";
+                        }
+                        else
+                        {
+                            item.StatusAsk = "下跌";
+                        }
+                        if (Bid > item.Bid)
+                        {
 
-                        item.StatusAsk = "上漲";
+                            item.StatusBid = "上漲";
+                        }
+                        else
+                        {
+                            item.StatusBid = "下跌";
+                        }
+                        item.Ask = Ask;//賣出價
+                        item.Bid = Bid;//買入價
+                        var sourceMoney = new BindingSource();
+                        sourceMoney.DataSource = ListVal;
+                        SysHelper.Print(dataGridViewMoney, sourceMoney);
                     }
-                    else
+                    catch (Exception)
                     {
-                        item.StatusAsk = "下跌";
                     }
-                    if (Bid > item.Bid)
-                    {
-
-                        item.StatusBid = "上漲";
-                    }
-                    else
-                    {
-                        item.StatusBid = "下跌";
-                    }
-                    item.Ask = Ask;//賣出價
-                    item.Bid = Bid;//買入價
-                    var sourceMoney = new BindingSource();
-                    sourceMoney.DataSource = ListVal;
-                    SysHelper.Print(dataGridViewMoney, sourceMoney);
+                 
                 });
             }
         }
@@ -311,8 +494,8 @@ namespace WindowsFormsApp1
                     {
                         item.StatusBid = "下跌";
                     }
-                    item.Ask = Ask;//賣出價
-                    item.Bid = Bid;//買入價
+                    item.Ask = Ask * Ratio;//賣出價
+                    item.Bid = Bid * Ratio;//買入價
 
                     var sourceMoney = new BindingSource();
                     sourceMoney.DataSource = ListVal;

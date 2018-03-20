@@ -58,6 +58,7 @@
     <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.0\lib\net461\System.Security.Cryptography.Algorithms.dll</HintPath>
     </Reference>
@@ -89,12 +90,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CoinexApi\CoinexClinet.cs" />
+    <Compile Include="CoinexApi\Objects\CoinexApiResult.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GateioApi\GateioClinet.cs" />
+    <Compile Include="GateioApi\Objects\GateioApiResult.cs" />
+    <Compile Include="GateioApi\Objects\TickerData.cs" />
     <Compile Include="HitbtcApi\HitbtcClient.cs" />
     <Compile Include="HitbtcApi\Objects\ErrorMessage.cs" />
     <Compile Include="HitbtcApi\Objects\HitbtcApiResult.cs" />

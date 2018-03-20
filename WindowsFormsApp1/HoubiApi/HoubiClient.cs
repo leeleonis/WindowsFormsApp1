@@ -109,7 +109,7 @@ namespace HuobiApi
             WebSocket.Closed += new EventHandler((sender, e) =>
             {
                 WebSocket.Dispose();
-                if (error == null) OnClose(sender, e);
+                if (error == null && OnClose != null) OnClose(sender, e);
             });
 
             WebSocket.Open();

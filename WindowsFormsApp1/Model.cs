@@ -36,6 +36,10 @@ namespace WindowsFormsApp1
         /// 手續費
         /// </summary>
         public decimal Fee { get; set; }
+        /// <summary>
+        /// 交易類型
+        /// </summary>
+        public string ViewType { get; set; }
 
     }
     internal class Info
@@ -60,5 +64,29 @@ namespace WindowsFormsApp1
     internal class Memo
     {
         public string Msg { get; set; }
+    }
+    internal class ExchangeTurnover
+    {
+        /// <summary>
+        /// 交易所1
+        /// </summary>
+        public string  Name1 { get; set; }
+        /// <summary>
+        /// 交易所2
+        /// </summary>
+        public string Name2 { get; set; }
+        /// <summary>
+        /// 價差
+        /// </summary>
+        public decimal Spread { get; set; }
+        /// <summary>
+        /// 翻轉次數
+        /// </summary>
+        public int Turn { get; set; }
+        /// <summary>
+        /// 狀態
+        /// </summary>
+        public string Status { get; set; }
+      
     }
 }
