@@ -25,6 +25,7 @@ using System.Security.Authentication;
 using System.Net;
 using System.Net.Http;
 using GateioApi.Objects;
+using BittrexApi;
 
 namespace WindowsFormsApp1
 {
@@ -60,6 +61,7 @@ namespace WindowsFormsApp1
             ListVal.Add(new ViewData { Name = "Huobi", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
             ListVal.Add(new ViewData { Name = "Gateio", Bid = 0, Ask = 0, Fee = 0.2M, Currency = "btc_usdt", ViewType = "BTCUSDT" });
             ListVal.Add(new ViewData { Name = "Coinex", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "Bittrex", Bid = 0, Ask = 0, Fee = 0.25M, Currency = "USDT-BTC", ViewType = "BTCUSDT" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHUSDT" });
@@ -86,7 +88,7 @@ namespace WindowsFormsApp1
             //    Console.Write(i.ToString("00") + ":");
             //    Console.WriteLine(p);
             //}
-            GetInfo();
+            //GetInfo();
             GetTicker();
             //MatchCheck();
         }
@@ -244,6 +246,47 @@ namespace WindowsFormsApp1
                 {
                     CoinexFun(item);
                 }
+                else if (item.Name == "Bittrex")
+                {
+                    BittrexFun(item);
+                }
+            }
+        }
+
+        private void BittrexFun(ViewData item)
+        {
+            using (var BittrexApiClinet = new BittrexApiClinet())
+            {
+                var SocketResult = BittrexApiClinet.SubscribeTicker(item.Currency, (data) =>
+                {
+
+                    var Ask = data.Sell.Min(x => x.Rate) * Ratio;//賣出價
+                    var Bid = data.Buy.Max(x => x.Rate) * Ratio;//買入價
+                    if (Ask > item.Ask)
+                    {
+
+                        item.StatusAsk = "上漲";
+                    }
+                    else
+                    {
+                        item.StatusAsk = "下跌";
+                    }
+                    if (Bid > item.Bid)
+                    {
+
+                        item.StatusBid = "上漲";
+                    }
+                    else
+                    {
+                        item.StatusBid = "下跌";
+                    }
+                    item.Ask = Ask;//賣出價
+                    item.Bid = Bid;//買入價
+
+                    var sourceMoney = new BindingSource();
+                    sourceMoney.DataSource = ListVal;
+                    SysHelper.Print(dataGridViewMoney, sourceMoney);
+                });
             }
         }
 
