@@ -64,11 +64,11 @@ namespace WindowsFormsApp1
             Form.CheckForIllegalCrossThreadCalls = false;
             //報價
             ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "BTCUSDT", ViewType = "BTCUSDT" });
-            ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "BTCUSD", ViewType = "BTCUSDT" });
-            ListVal.Add(new ViewData { Name = "Huobi", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
-            ListVal.Add(new ViewData { Name = "Gateio", Bid = 0, Ask = 0, Fee = 0.2M, Currency = "btc_usdt", ViewType = "BTCUSDT" });
-            ListVal.Add(new ViewData { Name = "Coinex", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
-            ListVal.Add(new ViewData { Name = "Bittrex", Bid = 0, Ask = 0, Fee = 0.25M, Currency = "USDT-BTC", ViewType = "BTCUSDT" });
+            //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "BTCUSD", ViewType = "BTCUSDT" });
+            //ListVal.Add(new ViewData { Name = "Huobi", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
+            //ListVal.Add(new ViewData { Name = "Gateio", Bid = 0, Ask = 0, Fee = 0.2M, Currency = "btc_usdt", ViewType = "BTCUSDT" });
+            //ListVal.Add(new ViewData { Name = "Coinex", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
+            //ListVal.Add(new ViewData { Name = "Bittrex", Bid = 0, Ask = 0, Fee = 0.25M, Currency = "USDT-BTC", ViewType = "BTCUSDT" });
             ListVal.Add(new ViewData { Name = "BITPoint", Bid = 0, Ask = 0, Fee = 0M, Currency = "BTCTWD", ViewType = "BTCTWD" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "ETHBTC" });
@@ -439,7 +439,8 @@ namespace WindowsFormsApp1
                 {
                     if (webBrowserBtc.Document != null)
                     {
-
+                        //HtmlElement bidPrice = webBrowserBtc.Document.All["bidPrice"];
+                        //HtmlElement askPrice = webBrowserBtc.Document.All["askPrice"];
 
 
                         HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
@@ -495,6 +496,24 @@ namespace WindowsFormsApp1
                     webBrowserBtc.Navigate(url3);
                     //等網頁載完
                     loading(webBrowserBtc);
+                    var divlist = webBrowserBtc.Document.GetElementsByTagName("div");
+                    foreach (HtmlElement link1 in divlist)
+                    {
+                        if (link1.GetAttribute("className") == ("ui horizontal list"))
+                        {
+                            var divlistA = link1.GetElementsByTagName("div");
+                            foreach (HtmlElement link2 in divlistA)
+                            {
+                                if (link2.GetAttribute("className") == "item")
+                                {
+                                    if( link2.InnerText.Contains("先生"))
+                                    {
+                                        labelName.Text = divlistA[0].InnerText + divlistA[1].InnerText;
+                                    }
+                                }
+                            }
+                        }
+                    }
                     loginged = true;
                     haveData = true;
                 }
@@ -584,8 +603,8 @@ namespace WindowsFormsApp1
                     {
                         Biditemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
                     }
-                    var Ask = Askitemlist.Max(x => x.price);
-                    var Bid = Biditemlist.Min(x => x.price);
+                    var Ask = Askitemlist.Min(x => x.price);
+                    var Bid = Biditemlist.Max(x => x.price);
 
                     if (Ask > item.Ask)
                     {
@@ -631,8 +650,8 @@ namespace WindowsFormsApp1
                     {
                         Biditemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
                     }
-                    var Ask = Askitemlist.Max(x => x.price);
-                    var Bid = Biditemlist.Min(x => x.price);
+                    var Ask = Askitemlist.Min(x => x.price);
+                    var Bid = Biditemlist.Max(x => x.price);
 
                     if (Ask > item.Ask)
                     {
@@ -726,13 +745,13 @@ namespace WindowsFormsApp1
 
                 //});
 
-                var successSymbol = BinanceSocketClient.SubscribeToDepthStream(item.Currency, (data) =>
+                var successSymbol = BinanceSocketClient.SubscribeToPartialBookDepthStream(item.Currency,5, (data) =>
                 {
                     //dataGridViewMoney.DataSource = null;
                     try
                     {
-                        var Ask = data.Asks.Max(x => x.Price) * Ratio;//賣出價
-                        var Bid = data.Bids.Min(x => x.Price) * Ratio;//買入價
+                        var Ask = data.Asks.Min(x => x.Price) * Ratio;//賣出價
+                        var Bid = data.Bids.Max(x => x.Price) * Ratio;//買入價
                         if (Ask > item.Ask)
                         {
 
@@ -792,8 +811,8 @@ namespace WindowsFormsApp1
                     {
                         Biditemlist.Add(new HuobiApi.Objects.liem { price = listitem[0], amount = listitem[1] });
                     }
-                    var Ask = Askitemlist.Max(x => x.price);
-                    var Bid = Biditemlist.Min(x => x.price);
+                    var Ask = Askitemlist.Min(x => x.price);
+                    var Bid = Biditemlist.Max(x => x.price);
 
                     if (Ask > item.Ask)
                     {

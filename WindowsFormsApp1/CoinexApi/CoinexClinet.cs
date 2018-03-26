@@ -26,12 +26,21 @@ namespace CoinexApi
                 {
                     while (true)
                     {
-                        var response = httpClient.GetStringAsync(url).Result;
-                        responsedata = JsonConvert.DeserializeObject<CoinexApiResult>(response);
-                        if (responsedata.code == 0)
+                        try
                         {
-                            onUpdate(responsedata);
+                            var response = httpClient.GetStringAsync(url).Result;
+                            responsedata = JsonConvert.DeserializeObject<CoinexApiResult>(response);
+                            if (responsedata.code == 0)
+                            {
+                                onUpdate(responsedata);
+                            }
                         }
+                        catch
+                        {
+
+
+                        }
+                       
                         Thread.Sleep(1000);
                     }
                 }
