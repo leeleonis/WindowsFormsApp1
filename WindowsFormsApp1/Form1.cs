@@ -437,33 +437,40 @@ namespace WindowsFormsApp1
                 loginged = false;
                 try
                 {
+                    if (webBrowserBtc.Document != null)
+                    {
 
 
-                    HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
-                    ele.SetAttribute("type", "text/javascript");
-                    ele.SetAttribute("text", @"function GetPictureData() { 
+
+                        HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
+                        ele.SetAttribute("type", "text/javascript");
+                        ele.SetAttribute("text", @"function GetPictureData() { 
                                         var vTable = $('body').html();
                                         return vTable;}");
 
-                    webBrowserBtc.Document.Body.AppendChild(ele);
-                    object result = webBrowserBtc.Document.InvokeScript("GetPictureData");
-                    if (result != null)
-                    {
-                        // convert string to stream
-                        byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
-                        //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
-                        MemoryStream stream = new MemoryStream(byteArray);
-                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                        doc.Load(stream, Encoding.UTF8);
+                        webBrowserBtc.Document.Body.AppendChild(ele);
+                        object result = webBrowserBtc.Document.InvokeScript("GetPictureData");
+                        if (result != null)
+                        {
+                            // convert string to stream
+                            byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
+                            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
+                            MemoryStream stream = new MemoryStream(byteArray);
+                            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                            doc.Load(stream, Encoding.UTF8);
 
-                        decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
-                        decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
+                            decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
+                            decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
+                        }
+                        else
+                        {
+                            loginged = true;
+                        }
                     }
                     else
                     {
-                        loginged = true;
+                        haveData = false;
                     }
-
 
                 }
                 catch (Exception)
