@@ -26,12 +26,19 @@ using System.Net;
 using System.Net.Http;
 using GateioApi.Objects;
 using BittrexApi;
+using BITPointApi;
 
 namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
-        public static decimal Ratio = 1;
+        public static DateTime trydt = new DateTime(2018, 5, 1);
+        public static string ID { get; set; }
+        public static string PWD { get; set; }
+        public static string url1 = "https://trade.bitpoint-tw.com/bptw-web/login";
+        public static string url3 = "https://trade.bitpoint-tw.com/bptw-web/spot_trading";
+        public static string htt = "";
+        public static decimal Ratio = 30;
         public static decimal TempOder = 0;
         public static bool bExchange = false;
         public decimal MinQuantity = 0.5M;
@@ -62,6 +69,7 @@ namespace WindowsFormsApp1
             ListVal.Add(new ViewData { Name = "Gateio", Bid = 0, Ask = 0, Fee = 0.2M, Currency = "btc_usdt", ViewType = "BTCUSDT" });
             ListVal.Add(new ViewData { Name = "Coinex", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
             ListVal.Add(new ViewData { Name = "Bittrex", Bid = 0, Ask = 0, Fee = 0.25M, Currency = "USDT-BTC", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "BITPoint", Bid = 0, Ask = 0, Fee = 0M, Currency = "BTCTWD", ViewType = "BTCTWD" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHUSDT" });
@@ -77,10 +85,43 @@ namespace WindowsFormsApp1
             //BanFee = 0.1M;
             //HitFee = 0.1M;
             dataGridViewMoney.AutoGenerateColumns = false;
+            var list = new List<ComboboxItem>();
+            list.Add(new ComboboxItem { Text = "台幣", Value = 1 });
+            list.Add(new ComboboxItem { Text = "美金", Value = 30 });
+            comboBoxCurrency.Items.AddRange(list.ToArray());
         }
-
+        void Form2_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Form2 NForm2 = (Form2)sender;
+            ID = NForm2.ID;
+            PWD = NForm2.PWD;
+            GetTicker();
+            //this.textBox1.Text = NForm2.pw
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
+            //試用日期
+
+            if (trydt > DateTime.Today)
+            {
+                Form2 aChild = new Form2();
+                aChild.ShowInTaskbar = false;
+                aChild.ShowDialog(this);
+                ID = aChild.ID;
+                PWD = aChild.PWD;
+                GetTicker();
+            }
+            else
+            {
+                MessageBox.Show("程式發生錯誤，請聯絡系統人員");
+                this.Close();
+            }
+
+            //aChild.Show();
+            //委託
+            //aChild.FormClosed += new FormClosedEventHandler(Form2_FormClosed);
+
+
             //var p = 200m;
             //for (int i = 0; i < 100; i++)
             //{
@@ -89,8 +130,97 @@ namespace WindowsFormsApp1
             //    Console.WriteLine(p);
             //}
             //GetInfo();
-            GetTicker();
+            //GetTicker();
             //MatchCheck();
+            //var url1 = "https://trade.bitpoint-tw.com/bptw-web/login";
+            //var url3 = "https://trade.bitpoint-tw.com/bptw-web/spot_trading";
+            //webBrowserBtc.ScriptErrorsSuppressed = true;
+            //webBrowserBtc.Navigate(url1);
+            ////等網頁載完
+            //loading(webBrowserBtc);
+            //HtmlElement username = webBrowserBtc.Document.All["username"];
+            //username.InnerText = "p6492leonis@gmail.com";
+            //HtmlElement password = webBrowserBtc.Document.All["passwd"];
+            //password.InnerText = "trazzp6492";
+            //HtmlElement commit = webBrowserBtc.Document.All["login_btn"];
+            //commit.InvokeMember("click");
+            ////等網頁載完
+            ////loading(webBrowserBtc);
+            //webBrowserBtc.Navigate(url3);
+            //等網頁載完
+            //loading(webBrowserBtc);
+            //WebBrowser NwebBrowserBtc = webBrowserBtc;
+            //Task.Factory.StartNew(() =>
+            //{
+
+            //    var loginged = false;
+            //    var url1 = "https://trade.bitpoint-tw.com/bptw-web/login";
+            //    var url3 = "https://trade.bitpoint-tw.com/bptw-web/spot_trading";
+            //    while (true)
+            //    {
+            //        try
+            //        {
+
+            //            NwebBrowserBtc.ScriptErrorsSuppressed = true;
+            //            if (!loginged)
+            //            {
+            //                NwebBrowserBtc.Navigate(url1);
+            //                //等網頁載完
+            //                loading(webBrowserBtc);
+            //                HtmlElement username = NwebBrowserBtc.Document.All["username"];
+            //                username.InnerText = "p6492leonis@gmail.com";
+            //                HtmlElement password = NwebBrowserBtc.Document.All["passwd"];
+            //                password.InnerText = "trazzp6492";
+            //                HtmlElement commit = NwebBrowserBtc.Document.All["login_btn"];
+            //                commit.InvokeMember("click");
+            //                //等網頁載完
+            //                //loading(webBrowserBtc);
+            //                NwebBrowserBtc.Navigate(url3);
+            //                //等網頁載完
+            //                //loading(webBrowserBtc);
+            //                loginged = true;
+            //            }
+            //            HtmlElement ele = NwebBrowserBtc.Document.CreateElement("script");
+            //            ele.SetAttribute("type", "text/javascript");
+            //            ele.SetAttribute("text", @"function GetPictureData() { 
+            //                            var vTable = $('body').html();
+            //                            return vTable;}");
+
+            //            NwebBrowserBtc.Document.Body.AppendChild(ele);
+            //            object result = NwebBrowserBtc.Document.InvokeScript("GetPictureData");
+            //            // convert string to stream
+            //            byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
+            //            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
+            //            MemoryStream stream = new MemoryStream(byteArray);
+            //            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+            //            doc.Load(stream, Encoding.UTF8);
+            //            var bid = 0M;
+            //            var ask = 0M;
+            //            decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
+            //            decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
+            //            //responsedata.Ask = ask;
+            //            //responsedata.Bid = bid;
+            //            //onUpdate(responsedata);
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            loginged = false;
+            //        }
+            //        Thread.Sleep(1000);
+            //    }
+
+            //}).ContinueWith((taskResult) =>
+            //{
+            //    //// 顯示在 Form 的視窗標題上
+            //    //this.Test = taskResult.Result.ToString();
+            //}, TaskScheduler.FromCurrentSynchronizationContext()); ;
+
+
+        }
+        private void loading(WebBrowser webBrowserBtc)
+        {
+            while (!(webBrowserBtc.ReadyState == WebBrowserReadyState.Complete))
+                Application.DoEvents();
         }
         /// <summary>
         /// 比價差
@@ -105,7 +235,7 @@ namespace WindowsFormsApp1
                     {
                         foreach (var item2 in ListVal)
                         {
-                            if (item1.Name!=item2.Name)
+                            if (item1.Name != item2.Name)
                             {
                                 var Askval = item1.Ask * (1 + (item1.Fee / 100));
                                 var Bidval = item2.Bid * (1 - (item2.Fee / 100));
@@ -132,7 +262,7 @@ namespace WindowsFormsApp1
                                                 TurnValitem.Status = "-";
                                                 TurnValitem.Turn++;
                                             }
-                                        }                                
+                                        }
                                     }
                                 }
                                 else
@@ -168,10 +298,10 @@ namespace WindowsFormsApp1
                     var i = 0;
                     foreach (var item in ListTurn)
                     {
-                        var msg = string.Format("交易所：{0}>{1} 價差：{2} ；翻轉次數{3}" ,item.Name1,item.Name2, item.Spread, item.Turn);
+                        var msg = string.Format("交易所：{0}>{1} 價差：{2} ；翻轉次數{3}", item.Name1, item.Name2, item.Spread, item.Turn);
                         ListMsg.Insert(0, new Memo { Msg = msg });
                     }
-                   
+
                     var sourceMemo = new BindingSource();
                     sourceMemo.DataSource = ListMsg;
                     SysHelper.Print(dataGridViewMemo, sourceMemo);
@@ -240,7 +370,7 @@ namespace WindowsFormsApp1
                 }
                 else if (item.Name == "Gateio")
                 {
-                   GateioFun(item);
+                    GateioFun(item);
                 }
                 else if (item.Name == "Coinex")
                 {
@@ -250,7 +380,146 @@ namespace WindowsFormsApp1
                 {
                     BittrexFun(item);
                 }
+                else if (item.Name == "BITPoint")
+                {
+                    BITPointFun(item);
+                }
             }
+        }
+
+        private void BITPointFun(ViewData item)
+        {
+            using (var BITPointClinet = new BITPointClinet())
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    while (true)
+                    {
+                        try
+                        {
+                            webBrowserBtc.ScriptErrorsSuppressed = true;
+
+                            Action<string> test = s => GetElement(item);
+                            this.Invoke(test, "test");
+                            Application.DoEvents();
+
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+                        SpinWait.SpinUntil(() => false, 1000);
+                    }
+
+                }).ContinueWith((taskResult) =>
+                {
+
+                }, TaskScheduler.FromCurrentSynchronizationContext());
+            }
+        }
+
+        private void GetElement(ViewData item)
+        {
+            Action<string> test = s => GetElement1(item);
+            this.Invoke(test, "test");
+            Application.DoEvents();
+        }
+        private void GetElement1(ViewData item)
+        {
+            var loginged = true;
+            var haveData = true;
+            var bid = 0M;
+            var ask = 0M;
+            while (loginged)
+            {
+
+                loginged = false;
+                try
+                {
+
+
+                    HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
+                    ele.SetAttribute("type", "text/javascript");
+                    ele.SetAttribute("text", @"function GetPictureData() { 
+                                        var vTable = $('body').html();
+                                        return vTable;}");
+
+                    webBrowserBtc.Document.Body.AppendChild(ele);
+                    object result = webBrowserBtc.Document.InvokeScript("GetPictureData");
+                    if (result != null)
+                    {
+                        // convert string to stream
+                        byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
+                        //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
+                        MemoryStream stream = new MemoryStream(byteArray);
+                        HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                        doc.Load(stream, Encoding.UTF8);
+
+                        decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
+                        decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
+                    }
+                    else
+                    {
+                        loginged = true;
+                    }
+
+
+                }
+                catch (Exception)
+                {
+                    haveData = false;
+                }
+
+                if (bid == 0 && ask == 0 && !haveData)
+                {
+                    loginged = true;
+                    webBrowserBtc.Navigate(url1);
+                    //等網頁載完
+                    loading(webBrowserBtc);
+                    HtmlElement username = webBrowserBtc.Document.All["username"];
+                    username.InnerText = ID;
+                    HtmlElement password = webBrowserBtc.Document.All["passwd"];
+                    password.InnerText = PWD;
+                    HtmlElement commit = webBrowserBtc.Document.All["login_btn"];
+                    commit.InvokeMember("click");
+                    //等網頁載完
+                    loading(webBrowserBtc);
+                    webBrowserBtc.Navigate(url3);
+                    //等網頁載完
+                    loading(webBrowserBtc);
+                    loginged = true;
+                    haveData = true;
+                }
+                SpinWait.SpinUntil(() => false, 1000);
+            }
+            var Ask = ask;//賣出價
+            var Bid = bid;//買入價
+            if (Ask > item.Ask)
+            {
+
+                item.StatusAsk = "上漲";
+            }
+            else
+            {
+                item.StatusAsk = "下跌";
+            }
+            if (Bid > item.Bid)
+            {
+
+                item.StatusBid = "上漲";
+            }
+            else
+            {
+                item.StatusBid = "下跌";
+            }
+            item.Ask = Ask;//賣出價
+            item.Bid = Bid;//買入價
+
+            var sourceMoney = new BindingSource();
+            sourceMoney.DataSource = ListVal;
+            SysHelper.Print(dataGridViewMoney, sourceMoney);
+
         }
 
         private void BittrexFun(ViewData item)
@@ -391,8 +660,8 @@ namespace WindowsFormsApp1
                 var SocketResult = HitbtcSocketClient.SubscribeTicker(item.Currency, (data) =>
                 {
 
-                    var Ask = data.Data.Ask* Ratio;//賣出價
-                    var Bid = data.Data.Bid* Ratio;//買入價
+                    var Ask = data.Data.Ask * Ratio;//賣出價
+                    var Bid = data.Data.Bid * Ratio;//買入價
                     if (Ask > item.Ask)
                     {
 
@@ -484,7 +753,7 @@ namespace WindowsFormsApp1
                     catch (Exception)
                     {
                     }
-                 
+
                 });
             }
         }
@@ -614,5 +883,6 @@ namespace WindowsFormsApp1
             }
             MatchExchange();
         }
+
     }
 }

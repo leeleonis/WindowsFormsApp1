@@ -6,6 +6,12 @@ using System.Threading.Tasks;
 
 namespace WindowsFormsApp1
 {
+    internal class ComboboxItem
+    {
+        public string Text { get; set; }
+        public decimal Value { get; set; }
+        public override string ToString() { return Text; }
+    }
     internal class ViewData
     {
         /// <summary>
