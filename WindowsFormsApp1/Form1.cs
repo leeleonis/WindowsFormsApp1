@@ -32,6 +32,7 @@ namespace WindowsFormsApp1
 {
     public partial class Form1 : Form
     {
+        public static DateTime SYSdt = DateTime.Now;
         public static DateTime trydt = new DateTime(2018, 5, 1);
         public static string ID { get; set; }
         public static string PWD { get; set; }
@@ -323,7 +324,7 @@ namespace WindowsFormsApp1
                     var Bidval = highest.Bid * (1 - (highest.Fee / 100));
                     if (TempName != highest.Name)
                     {
-                        if (Askval < Bidval)
+                        if (Askval < Bidval && Askval > 0 && Bidval > 0)
                         {
                             TempName = highest.Name;
                             //獲利
@@ -472,6 +473,14 @@ namespace WindowsFormsApp1
                     {
                         haveData = false;
                     }
+                    //if (SYSdt < DateTime.Now.AddMinutes(-5) && item.Ask == ask && item.Bid == bid)
+                    //{
+                    //    SYSdt = DateTime.Now;
+                    //    webBrowserBtc.Navigate(url3);
+                    //    //等網頁載完
+                    //    loading(webBrowserBtc);
+                    //    loginged = true;
+                    //}
 
                 }
                 catch (Exception)
@@ -479,8 +488,9 @@ namespace WindowsFormsApp1
                     haveData = false;
                 }
 
-                if (bid == 0 && ask == 0 && !haveData)
+                if ((bid == 0 && ask == 0 && !haveData)|| loginged|| SYSdt < DateTime.Now.AddMinutes(-30))
                 {
+                    SYSdt = DateTime.Now;
                     loginged = true;
                     webBrowserBtc.Navigate(url1);
                     //等網頁載完
