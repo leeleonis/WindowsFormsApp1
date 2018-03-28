@@ -36,6 +36,7 @@ namespace WindowsFormsApp1
         public static DateTime trydt = new DateTime(2018, 5, 1);
         public static string ID { get; set; }
         public static string PWD { get; set; }
+        public static string TradingPassword { get; set; }
         public static string url1 = "https://trade.bitpoint-tw.com/bptw-web/login";
         public static string url3 = "https://trade.bitpoint-tw.com/bptw-web/spot_trading";
         public static string htt = "";
@@ -90,6 +91,7 @@ namespace WindowsFormsApp1
             list.Add(new ComboboxItem { Text = "台幣", Value = 1 });
             list.Add(new ComboboxItem { Text = "美金", Value = 30 });
             comboBoxCurrency.Items.AddRange(list.ToArray());
+            
         }
         void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -105,11 +107,14 @@ namespace WindowsFormsApp1
 
             if (trydt > DateTime.Today)
             {
-                Form2 aChild = new Form2();
-                aChild.ShowInTaskbar = false;
-                aChild.ShowDialog(this);
-                ID = aChild.ID;
-                PWD = aChild.PWD;
+                //Form2 aChild = new Form2();
+                //aChild.ShowInTaskbar = false;
+                //aChild.ShowDialog(this);
+                //ID = aChild.ID;
+                //PWD = aChild.PWD;
+                ID = "p6492leonis@gmail.com";
+                PWD = "trazzp6492";
+                TradingPassword = "7136";
                 GetTicker();
             }
             else
@@ -117,106 +122,6 @@ namespace WindowsFormsApp1
                 MessageBox.Show("程式發生錯誤，請聯絡系統人員");
                 this.Close();
             }
-
-            //aChild.Show();
-            //委託
-            //aChild.FormClosed += new FormClosedEventHandler(Form2_FormClosed);
-
-
-            //var p = 200m;
-            //for (int i = 0; i < 100; i++)
-            //{
-            //    p *= 1 + 0.012m;
-            //    Console.Write(i.ToString("00") + ":");
-            //    Console.WriteLine(p);
-            //}
-            //GetInfo();
-            //GetTicker();
-            //MatchCheck();
-            //var url1 = "https://trade.bitpoint-tw.com/bptw-web/login";
-            //var url3 = "https://trade.bitpoint-tw.com/bptw-web/spot_trading";
-            //webBrowserBtc.ScriptErrorsSuppressed = true;
-            //webBrowserBtc.Navigate(url1);
-            ////等網頁載完
-            //loading(webBrowserBtc);
-            //HtmlElement username = webBrowserBtc.Document.All["username"];
-            //username.InnerText = "p6492leonis@gmail.com";
-            //HtmlElement password = webBrowserBtc.Document.All["passwd"];
-            //password.InnerText = "trazzp6492";
-            //HtmlElement commit = webBrowserBtc.Document.All["login_btn"];
-            //commit.InvokeMember("click");
-            ////等網頁載完
-            ////loading(webBrowserBtc);
-            //webBrowserBtc.Navigate(url3);
-            //等網頁載完
-            //loading(webBrowserBtc);
-            //WebBrowser NwebBrowserBtc = webBrowserBtc;
-            //Task.Factory.StartNew(() =>
-            //{
-
-            //    var loginged = false;
-            //    var url1 = "https://trade.bitpoint-tw.com/bptw-web/login";
-            //    var url3 = "https://trade.bitpoint-tw.com/bptw-web/spot_trading";
-            //    while (true)
-            //    {
-            //        try
-            //        {
-
-            //            NwebBrowserBtc.ScriptErrorsSuppressed = true;
-            //            if (!loginged)
-            //            {
-            //                NwebBrowserBtc.Navigate(url1);
-            //                //等網頁載完
-            //                loading(webBrowserBtc);
-            //                HtmlElement username = NwebBrowserBtc.Document.All["username"];
-            //                username.InnerText = "p6492leonis@gmail.com";
-            //                HtmlElement password = NwebBrowserBtc.Document.All["passwd"];
-            //                password.InnerText = "trazzp6492";
-            //                HtmlElement commit = NwebBrowserBtc.Document.All["login_btn"];
-            //                commit.InvokeMember("click");
-            //                //等網頁載完
-            //                //loading(webBrowserBtc);
-            //                NwebBrowserBtc.Navigate(url3);
-            //                //等網頁載完
-            //                //loading(webBrowserBtc);
-            //                loginged = true;
-            //            }
-            //            HtmlElement ele = NwebBrowserBtc.Document.CreateElement("script");
-            //            ele.SetAttribute("type", "text/javascript");
-            //            ele.SetAttribute("text", @"function GetPictureData() { 
-            //                            var vTable = $('body').html();
-            //                            return vTable;}");
-
-            //            NwebBrowserBtc.Document.Body.AppendChild(ele);
-            //            object result = NwebBrowserBtc.Document.InvokeScript("GetPictureData");
-            //            // convert string to stream
-            //            byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
-            //            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
-            //            MemoryStream stream = new MemoryStream(byteArray);
-            //            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-            //            doc.Load(stream, Encoding.UTF8);
-            //            var bid = 0M;
-            //            var ask = 0M;
-            //            decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
-            //            decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
-            //            //responsedata.Ask = ask;
-            //            //responsedata.Bid = bid;
-            //            //onUpdate(responsedata);
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            loginged = false;
-            //        }
-            //        Thread.Sleep(1000);
-            //    }
-
-            //}).ContinueWith((taskResult) =>
-            //{
-            //    //// 顯示在 Form 的視窗標題上
-            //    //this.Test = taskResult.Result.ToString();
-            //}, TaskScheduler.FromCurrentSynchronizationContext()); ;
-
-
         }
         private void loading(WebBrowser webBrowserBtc)
         {
@@ -313,11 +218,13 @@ namespace WindowsFormsApp1
 
         private void MatchExchange()
         {
+           
             Task.Factory.StartNew(() =>
             {
                 var TempName = "";
                 while (bExchange)
                 {
+                   
                     var lowest = ListVal.OrderBy(x => x.Ask).FirstOrDefault();
                     var highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
                     var Askval = lowest.Ask * (1 + (lowest.Fee / 100));
@@ -342,6 +249,9 @@ namespace WindowsFormsApp1
                             MinQuantity.ToString()//交易數量
                             };
                             var msg = string.Format("{5} - {0} 配對完成： {1}的Bid - {2} 和 {3}的Ask - {4}   原Bid {6}   原Ask {7}   ;交易數量：{9} BTC  ＞獲利 {8} USDT", argsData);
+                            //下單
+                            BidOrdar(highest.Name, Bidval, MinQuantity);
+                            AskOrdar(lowest.Name, Askval, MinQuantity);
                             ListMsg.Insert(0, new Memo { Msg = msg });
                             var sourceMemo = new BindingSource();
                             sourceMemo.DataSource = ListMsg;
@@ -352,6 +262,167 @@ namespace WindowsFormsApp1
                 }
             });
         }
+        /// <summary>
+        /// 買幣下單
+        /// </summary>
+        /// <param name="name">交易所名稱</param>
+        /// <param name="askval">買幣下單價格</param>
+        /// <param name="minQuantity">數量</param>
+        private void AskOrdar(string name, decimal askval, decimal minQuantity)
+        {
+            if (name == "Binance")
+            {
+               
+            }
+            else if (name == "Hitbtc")
+            {
+                
+            }
+            else if (name == "Huobi")
+            {
+                
+            }
+            else if (name == "Gateio")
+            {
+               
+            }
+            else if (name == "Coinex")
+            {
+              
+            }
+            else if (name == "Bittrex")
+            {
+               
+            }
+            else if (name == "BITPoint")
+            {
+                Action<string> BITPointAsk = s => BITPointAskExchange(askval, minQuantity);
+                this.Invoke(BITPointAsk, " BITPointAsk");
+                Application.DoEvents();
+
+              
+            }
+        }
+        /// <summary>
+        /// 幣寶下買單
+        /// </summary>
+        /// <param name="askval">買價</param>
+        /// <param name="minQuantity">數量</param>
+        private void BITPointAskExchange(decimal askval, decimal minQuantity)
+        {
+            var singleBuysell= webBrowserBtc.Document.GetElementsByTagName("input").GetElementsByName("singleBuysell");//抓下單方式
+            if (singleBuysell != null)
+            {
+                foreach (HtmlElement el in singleBuysell)
+                {
+                    if (el.GetAttribute("value") == "3")
+                    {
+                        el.InvokeMember("click");
+                    }
+                }
+
+               webBrowserBtc.Document.All["singleOrderNominal"].InnerText = minQuantity.ToString();
+                var conditionCls = webBrowserBtc.Document.GetElementsByTagName("input").GetElementsByName("conditionCls");//抓下單方式
+                foreach (HtmlElement el in conditionCls)
+                {
+                    if (el.GetAttribute("value") == "1")
+                    {
+                        el.InvokeMember("click");
+                    }
+                }
+                webBrowserBtc.Document.All["singleOrderPrice"].InnerText = askval.ToString();
+                webBrowserBtc.Document.All["singleOrderConfirmationChk"].SetAttribute("checked", "checked");
+                webBrowserBtc.Document.All["singleTradingPassword"].InnerText = TradingPassword;
+                webBrowserBtc.Document.All["singleOrderBtn"].InvokeMember("click");
+            }
+        }
+        /// <summary>
+        /// 幣寶下賣單
+        /// </summary>
+        /// <param name="bidval">賣價</param>
+        /// <param name="minQuantity">數量</param>
+        private void BITPointBidExchange(decimal bidval, decimal minQuantity)
+        {
+            try
+            {
+                var tt = webBrowserBtc.DocumentText;
+
+                var singleBuysell = webBrowserBtc.Document.GetElementsByTagName("input").GetElementsByName("singleBuysell");//抓下單方式
+                if (singleBuysell != null)
+                {
+                    foreach (HtmlElement el in singleBuysell)
+                    {
+                        if (el.GetAttribute("value") == "1")
+                        {
+                            el.InvokeMember("click");
+                        }
+                    }
+
+                    webBrowserBtc.Document.All["singleOrderNominal"].InnerText = minQuantity.ToString();
+                    var conditionCls = webBrowserBtc.Document.GetElementsByTagName("input").GetElementsByName("conditionCls");//抓下單方式
+                    foreach (HtmlElement el in conditionCls)
+                    {
+                        if (el.GetAttribute("value") == "1")
+                        {
+                            el.InvokeMember("click");
+                        }
+                    }
+                    webBrowserBtc.Document.All["singleOrderPrice"].InnerText = bidval.ToString();
+                    webBrowserBtc.Document.All["singleOrderConfirmationChk"].SetAttribute("checked", "checked");
+                    webBrowserBtc.Document.All["singleTradingPassword"].InnerText = TradingPassword;
+                    webBrowserBtc.Document.All["singleOrderBtn"].InvokeMember("click");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                var s = ex;
+            }
+        }
+        /// <summary>
+        /// 賣幣下單
+        /// </summary>
+        /// <param name="name">交易所名稱</param>
+        /// <param name="bidval">賣幣下單價格</param>
+        /// <param name="minQuantity">數量</param>
+        private void BidOrdar(string name, decimal bidval, decimal minQuantity)
+        {
+            if (name == "Binance")
+            {
+
+            }
+            else if (name == "Hitbtc")
+            {
+
+            }
+            else if (name == "Huobi")
+            {
+
+            }
+            else if (name == "Gateio")
+            {
+
+            }
+            else if (name == "Coinex")
+            {
+
+            }
+            else if (name == "Bittrex")
+            {
+
+            }
+            else if (name == "BITPoint")
+            {
+
+                Action<string> BITPointBid = s => BITPointBidExchange(bidval, minQuantity);
+                this.Invoke(BITPointBid, "  BITPointBid");
+                Application.DoEvents();
+
+                //BITPointBidExchange(bidval, minQuantity);
+            }
+        }
+
+        
 
         private void GetTicker()
         {
@@ -400,8 +471,8 @@ namespace WindowsFormsApp1
                         {
                             webBrowserBtc.ScriptErrorsSuppressed = true;
 
-                            Action<string> test = s => GetElement(item);
-                            this.Invoke(test, "test");
+                            Action<string> GetBITPoint = s => GetBITPointData(item);
+                            this.Invoke(GetBITPoint, "GetBITPoint");
                             Application.DoEvents();
 
 
@@ -420,13 +491,7 @@ namespace WindowsFormsApp1
             }
         }
 
-        private void GetElement(ViewData item)
-        {
-            Action<string> test = s => GetElement1(item);
-            this.Invoke(test, "test");
-            Application.DoEvents();
-        }
-        private void GetElement1(ViewData item)
+        private void GetBITPointData(ViewData item)
         {
             var loginged = true;
             var haveData = true;
@@ -438,36 +503,49 @@ namespace WindowsFormsApp1
                 loginged = false;
                 try
                 {
-                    if (webBrowserBtc.Document != null)
+                   
+                    if (webBrowserBtc.Document != null && labelName.Text!= "未登入幣寶")
                     {
-                        //HtmlElement bidPrice = webBrowserBtc.Document.All["bidPrice"];
-                        //HtmlElement askPrice = webBrowserBtc.Document.All["askPrice"];
-
-
-                        HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
-                        ele.SetAttribute("type", "text/javascript");
-                        ele.SetAttribute("text", @"function GetPictureData() { 
-                                        var vTable = $('body').html();
-                                        return vTable;}");
-
-                        webBrowserBtc.Document.Body.AppendChild(ele);
-                        object result = webBrowserBtc.Document.InvokeScript("GetPictureData");
-                        if (result != null)
+                        if (webBrowserBtc.Url != new Uri(url3))
                         {
-                            // convert string to stream
-                            byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
-                            //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
-                            MemoryStream stream = new MemoryStream(byteArray);
-                            HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
-                            doc.Load(stream, Encoding.UTF8);
-
-                            decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
-                            decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
+                            webBrowserBtc.Navigate(url3);
+                            //等網頁載完
+                            loading(webBrowserBtc);
                         }
-                        else
+                        HtmlElement bidPrice = webBrowserBtc.Document.All["bidPrice"];
+                        HtmlElement askPrice = webBrowserBtc.Document.All["askPrice"];
+                        decimal.TryParse(bidPrice?.InnerText, out bid);
+                        decimal.TryParse(askPrice?.InnerText, out ask);
+                        if (bid == 0 && ask == 0 && SYSdt < DateTime.Now.AddMinutes(-3))
                         {
                             loginged = true;
                         }
+                        
+
+                        //HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
+                        //ele.SetAttribute("type", "text/javascript");
+                        //ele.SetAttribute("text", @"function GetPictureData() { 
+                        //                var vTable = $('body').html();
+                        //                return vTable;}");
+
+                        //webBrowserBtc.Document.Body.AppendChild(ele);
+                        //object result = webBrowserBtc.Document.InvokeScript("GetPictureData");
+                        //if (result != null)
+                        //{
+                        //    // convert string to stream
+                        //    byte[] byteArray = Encoding.UTF8.GetBytes(result.ToString());
+                        //    //byte[] byteArray = Encoding.ASCII.GetBytes(contents);
+                        //    MemoryStream stream = new MemoryStream(byteArray);
+                        //    HtmlAgilityPack.HtmlDocument doc = new HtmlAgilityPack.HtmlDocument();
+                        //    doc.Load(stream, Encoding.UTF8);
+
+                        //    decimal.TryParse(doc.GetElementbyId("bid_BTCTWD")?.InnerText, out bid);
+                        //    decimal.TryParse(doc.GetElementbyId("ask_BTCTWD")?.InnerText, out ask);
+                        //}
+                        //else
+                        //{
+                        //    loginged = true;
+                        //}
                     }
                     else
                     {
@@ -506,6 +584,7 @@ namespace WindowsFormsApp1
                     webBrowserBtc.Navigate(url3);
                     //等網頁載完
                     loading(webBrowserBtc);
+                    SpinWait.SpinUntil(() => false, 1000);
                     var divlist = webBrowserBtc.Document.GetElementsByTagName("div");
                     foreach (HtmlElement link1 in divlist)
                     {
@@ -524,6 +603,13 @@ namespace WindowsFormsApp1
                             }
                         }
                     }
+                    //HtmlElement elehref = webBrowserBtc.Document.CreateElement("script");
+                    //elehref.SetAttribute("type", "text/javascript");
+                    //elehref.SetAttribute("text", @"function changePage() { document.location.href='" + url3 + "';}");
+                    //webBrowserBtc.Document.Body.AppendChild(elehref);
+                    //object result = webBrowserBtc.Document.InvokeScript("changePage");
+
+
                     loginged = true;
                     haveData = true;
                 }

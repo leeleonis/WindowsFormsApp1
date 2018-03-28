@@ -29,12 +29,20 @@
         private void InitializeComponent()
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.labelName = new System.Windows.Forms.Label();
             this.comboBoxCurrency = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.dataGridViewMoney = new System.Windows.Forms.DataGridView();
+            this.MoneyColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MoneyColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MoneyColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MoneyColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MoneyColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MoneyColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MoneyColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridViewInfo = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -47,14 +55,6 @@
             this.MemoColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.listView1 = new System.Windows.Forms.ListView();
             this.webBrowserBtc = new System.Windows.Forms.WebBrowser();
-            this.labelName = new System.Windows.Forms.Label();
-            this.MoneyColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MoneyColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MoneyColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MoneyColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MoneyColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MoneyColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MoneyColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -93,6 +93,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(986, 707);
             this.splitContainer1.SplitterDistance = 502;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.labelName.Location = new System.Drawing.Point(102, 19);
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size(88, 16);
+            this.labelName.TabIndex = 9;
+            this.labelName.Text = "未登入幣寶";
             // 
             // comboBoxCurrency
             // 
@@ -165,6 +175,71 @@
             this.dataGridViewMoney.RowTemplate.Height = 24;
             this.dataGridViewMoney.Size = new System.Drawing.Size(489, 248);
             this.dataGridViewMoney.TabIndex = 3;
+            // 
+            // MoneyColumn1
+            // 
+            this.MoneyColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.MoneyColumn1.DataPropertyName = "Name";
+            this.MoneyColumn1.HeaderText = "交易所";
+            this.MoneyColumn1.Name = "MoneyColumn1";
+            this.MoneyColumn1.ReadOnly = true;
+            this.MoneyColumn1.Width = 66;
+            // 
+            // MoneyColumn2
+            // 
+            this.MoneyColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.MoneyColumn2.DataPropertyName = "ViewType";
+            this.MoneyColumn2.HeaderText = "幣別";
+            this.MoneyColumn2.Name = "MoneyColumn2";
+            this.MoneyColumn2.ReadOnly = true;
+            this.MoneyColumn2.Width = 54;
+            // 
+            // MoneyColumn3
+            // 
+            this.MoneyColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.MoneyColumn3.DataPropertyName = "StatusBid";
+            this.MoneyColumn3.FillWeight = 80F;
+            this.MoneyColumn3.HeaderText = "買入狀態";
+            this.MoneyColumn3.Name = "MoneyColumn3";
+            this.MoneyColumn3.ReadOnly = true;
+            this.MoneyColumn3.Width = 78;
+            // 
+            // MoneyColumn4
+            // 
+            this.MoneyColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.MoneyColumn4.DataPropertyName = "Bid";
+            this.MoneyColumn4.FillWeight = 80F;
+            this.MoneyColumn4.HeaderText = "賣價（Bid）";
+            this.MoneyColumn4.Name = "MoneyColumn4";
+            this.MoneyColumn4.ReadOnly = true;
+            this.MoneyColumn4.Width = 95;
+            // 
+            // MoneyColumn5
+            // 
+            this.MoneyColumn5.DataPropertyName = "StatusAsk";
+            this.MoneyColumn5.HeaderText = "賣出狀態";
+            this.MoneyColumn5.Name = "MoneyColumn5";
+            this.MoneyColumn5.ReadOnly = true;
+            // 
+            // MoneyColumn6
+            // 
+            this.MoneyColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.MoneyColumn6.DataPropertyName = "Ask";
+            this.MoneyColumn6.FillWeight = 80F;
+            this.MoneyColumn6.HeaderText = "買（Ask）";
+            this.MoneyColumn6.Name = "MoneyColumn6";
+            this.MoneyColumn6.ReadOnly = true;
+            this.MoneyColumn6.Width = 84;
+            // 
+            // MoneyColumn7
+            // 
+            this.MoneyColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.MoneyColumn7.DataPropertyName = "Fee";
+            this.MoneyColumn7.FillWeight = 80F;
+            this.MoneyColumn7.HeaderText = "手續費";
+            this.MoneyColumn7.Name = "MoneyColumn7";
+            this.MoneyColumn7.ReadOnly = true;
+            this.MoneyColumn7.Width = 66;
             // 
             // label1
             // 
@@ -282,83 +357,8 @@
             this.webBrowserBtc.Location = new System.Drawing.Point(3, 12);
             this.webBrowserBtc.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowserBtc.Name = "webBrowserBtc";
-            this.webBrowserBtc.Size = new System.Drawing.Size(465, 250);
+            this.webBrowserBtc.Size = new System.Drawing.Size(465, 627);
             this.webBrowserBtc.TabIndex = 7;
-            // 
-            // labelName
-            // 
-            this.labelName.AutoSize = true;
-            this.labelName.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.labelName.Location = new System.Drawing.Point(102, 19);
-            this.labelName.Name = "labelName";
-            this.labelName.Size = new System.Drawing.Size(88, 16);
-            this.labelName.TabIndex = 9;
-            this.labelName.Text = "未登入幣寶";
-            // 
-            // MoneyColumn1
-            // 
-            this.MoneyColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.MoneyColumn1.DataPropertyName = "Name";
-            this.MoneyColumn1.HeaderText = "交易所";
-            this.MoneyColumn1.Name = "MoneyColumn1";
-            this.MoneyColumn1.ReadOnly = true;
-            this.MoneyColumn1.Width = 66;
-            // 
-            // MoneyColumn2
-            // 
-            this.MoneyColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.MoneyColumn2.DataPropertyName = "ViewType";
-            this.MoneyColumn2.HeaderText = "幣別";
-            this.MoneyColumn2.Name = "MoneyColumn2";
-            this.MoneyColumn2.ReadOnly = true;
-            this.MoneyColumn2.Width = 54;
-            // 
-            // MoneyColumn3
-            // 
-            this.MoneyColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.MoneyColumn3.DataPropertyName = "StatusBid";
-            this.MoneyColumn3.FillWeight = 80F;
-            this.MoneyColumn3.HeaderText = "買入狀態";
-            this.MoneyColumn3.Name = "MoneyColumn3";
-            this.MoneyColumn3.ReadOnly = true;
-            this.MoneyColumn3.Width = 78;
-            // 
-            // MoneyColumn4
-            // 
-            this.MoneyColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.MoneyColumn4.DataPropertyName = "Bid";
-            this.MoneyColumn4.FillWeight = 80F;
-            this.MoneyColumn4.HeaderText = "賣價（Bid）";
-            this.MoneyColumn4.Name = "MoneyColumn4";
-            this.MoneyColumn4.ReadOnly = true;
-            this.MoneyColumn4.Width = 95;
-            // 
-            // MoneyColumn5
-            // 
-            this.MoneyColumn5.DataPropertyName = "StatusAsk";
-            this.MoneyColumn5.HeaderText = "賣出狀態";
-            this.MoneyColumn5.Name = "MoneyColumn5";
-            this.MoneyColumn5.ReadOnly = true;
-            // 
-            // MoneyColumn6
-            // 
-            this.MoneyColumn6.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.MoneyColumn6.DataPropertyName = "Ask";
-            this.MoneyColumn6.FillWeight = 80F;
-            this.MoneyColumn6.HeaderText = "買（Ask）";
-            this.MoneyColumn6.Name = "MoneyColumn6";
-            this.MoneyColumn6.ReadOnly = true;
-            this.MoneyColumn6.Width = 84;
-            // 
-            // MoneyColumn7
-            // 
-            this.MoneyColumn7.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.MoneyColumn7.DataPropertyName = "Fee";
-            this.MoneyColumn7.FillWeight = 80F;
-            this.MoneyColumn7.HeaderText = "手續費";
-            this.MoneyColumn7.Name = "MoneyColumn7";
-            this.MoneyColumn7.ReadOnly = true;
-            this.MoneyColumn7.Width = 66;
             // 
             // Form1
             // 
