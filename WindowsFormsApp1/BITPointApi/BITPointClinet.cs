@@ -30,24 +30,6 @@ namespace BITPointApi
                     try
                     {
                         webBrowserBtc.ScriptErrorsSuppressed = true;
-                        //if (!loginged)
-                        //{
-                        //    webBrowserBtc.Navigate(url1);
-                        //    //等網頁載完
-                        //    loading(webBrowserBtc);
-                        //    HtmlElement username = webBrowserBtc.Document.All["username"];
-                        //    username.InnerText = "p6492leonis@gmail.com";
-                        //    HtmlElement password = webBrowserBtc.Document.All["passwd"];
-                        //    password.InnerText = "trazzp6492";
-                        //    HtmlElement commit = webBrowserBtc.Document.All["login_btn"];
-                        //    commit.InvokeMember("click");
-                        //    //等網頁載完
-                        //    loading(webBrowserBtc);
-                        //    webBrowserBtc.Navigate(url3);
-                        //    //等網頁載完
-                        //    loading(webBrowserBtc);
-                        //    loginged = true;
-                        //}
                         HtmlElement ele = webBrowserBtc.Document.CreateElement("script");
                         ele.SetAttribute("type", "text/javascript");
                         ele.SetAttribute("text", @"function GetPictureData() { 

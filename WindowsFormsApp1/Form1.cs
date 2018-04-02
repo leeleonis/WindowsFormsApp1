@@ -65,13 +65,13 @@ namespace WindowsFormsApp1
             InitializeComponent();
             Form.CheckForIllegalCrossThreadCalls = false;
             //報價
-            ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "BTCUSDT", ViewType = "BTCUSDT" });
+            ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "BTCUSDT", ViewType = "BTCUSDT", Range=1000 });
             //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "BTCUSD", ViewType = "BTCUSDT" });
             //ListVal.Add(new ViewData { Name = "Huobi", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
             //ListVal.Add(new ViewData { Name = "Gateio", Bid = 0, Ask = 0, Fee = 0.2M, Currency = "btc_usdt", ViewType = "BTCUSDT" });
             //ListVal.Add(new ViewData { Name = "Coinex", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "btcusdt", ViewType = "BTCUSDT" });
             //ListVal.Add(new ViewData { Name = "Bittrex", Bid = 0, Ask = 0, Fee = 0.25M, Currency = "USDT-BTC", ViewType = "BTCUSDT" });
-            ListVal.Add(new ViewData { Name = "BITPoint", Bid = 0, Ask = 0, Fee = 0M, Currency = "BTCTWD", ViewType = "BTCTWD" });
+            ListVal.Add(new ViewData { Name = "BITPoint", Bid = 0, Ask = 0, Fee = 0M, Currency = "BTCTWD", ViewType = "BTCTWD", Range = -200 });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Hitbtc", Bid = 0, Ask = 0, Fee = 0.1M, Currency = "ETHBTC" });
             //ListVal.Add(new ViewData { Name = "Binance", Bid = 0, Ask = 0, Fee = 0.05M, Currency = "ETHUSDT" });
@@ -218,47 +218,81 @@ namespace WindowsFormsApp1
 
         private void MatchExchange()
         {
-           
+
             Task.Factory.StartNew(() =>
             {
-                var TempName = "";
+                var TempName = new Tuple<string, string>("", "");//目前交易的交易所
                 while (bExchange)
                 {
-                   
-                    var lowest = ListVal.OrderBy(x => x.Ask).FirstOrDefault();
-                    var highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
-                    var Askval = lowest.Ask * (1 + (lowest.Fee / 100));
-                    var Bidval = highest.Bid * (1 - (highest.Fee / 100));
-                    if (TempName != highest.Name)
+                    var lowest = new ViewData();
+                    var highest = new ViewData();
+                    var Askval = 0M;
+                    var Bidval = 0M;
+
+                    if (string.IsNullOrWhiteSpace(TempName.Item1) && string.IsNullOrWhiteSpace(TempName.Item1))  //第一次交易抓價差最大
                     {
-                        if (Askval < Bidval && Askval > 0 && Bidval > 0)
-                        {
-                            TempName = highest.Name;
-                            //獲利
-                            var Profit = (Bidval * MinQuantity) - (Askval * MinQuantity);
-                            string[] argsData = new string[] {
-                            "測試",
-                            highest.Name, //最高賣價交易所
-                            Bidval.ToString(), //含手續費賣價
-                            lowest.Name, //最低買價交易所
-                            Askval.ToString(),  //含手續費買價
-                            DateTime.Now.ToString(), //時間
-                            highest.Bid.ToString(), //不含手續費賣價
-                            lowest.Ask.ToString(),  //不含手續費買價
-                            Profit.ToString(),  //獲利
-                            MinQuantity.ToString()//交易數量
-                            };
-                            var msg = string.Format("{5} - {0} 配對完成： {1}的Bid - {2} 和 {3}的Ask - {4}   原Bid {6}   原Ask {7}   ;交易數量：{9} BTC  ＞獲利 {8} USDT", argsData);
-                            //下單
-                            BidOrdar(highest.Name, Bidval, MinQuantity);
-                            AskOrdar(lowest.Name, Askval, MinQuantity);
-                            ListMsg.Insert(0, new Memo { Msg = msg });
-                            var sourceMemo = new BindingSource();
-                            sourceMemo.DataSource = ListMsg;
-                            SysHelper.Print(dataGridViewMemo, sourceMemo);
-                        }
-                        Thread.Sleep(1000);
+                        lowest = ListVal.OrderBy(x => x.Ask).FirstOrDefault();
+                        highest = ListVal.OrderByDescending(x => x.Bid).FirstOrDefault();
                     }
+                    else
+                    {
+                        lowest = ListVal.Where(x=>x.Name== TempName.Item1).FirstOrDefault();
+                        highest = ListVal.Where(x => x.Name == TempName.Item2).FirstOrDefault();
+                    }
+                    Askval = lowest.Ask * (1 + (lowest.Fee / 100));
+                    Bidval = highest.Bid * (1 - (highest.Fee / 100));
+                    if (TempName.Item1 != highest.Name && lowest.Name != highest.Name)
+                    {
+                        if (Askval < Bidval && Askval > 0 && Bidval > 0)//補價差
+                        {
+                            if (Bidval - Askval > lowest.Range)
+                            {
+                                TempName = new Tuple<string, string>(highest.Name, lowest.Name);
+                                //獲利
+                                var Profit = (Bidval * MinQuantity) - (Askval * MinQuantity);
+                                string[] argsData = new string[] {
+                                "測試",
+                                highest.Name, //最高賣價交易所
+                                Bidval.ToString(), //含手續費賣價
+                                lowest.Name, //最低買價交易所
+                                Askval.ToString(),  //含手續費買價
+                                DateTime.Now.ToString(), //時間
+                                highest.Bid.ToString(), //不含手續費賣價
+                                lowest.Ask.ToString(),  //不含手續費買價
+                                Profit.ToString(),  //獲利
+                                MinQuantity.ToString(),//交易數量
+                                (Bidval-Askval).ToString()//價差
+                            };
+                                try
+                                {
+                                    var msg = string.Format("{5} - {0} 配對完成： {1}的Bid - {2} 和 {3}的Ask - {4}   原Bid {6}   原Ask {7}   ;交易數量：{9} BTC  ＞價差{10} 獲利 {8}", argsData);
+                                    //下單
+                                    BidOrdar(highest.Name, Bidval, MinQuantity);
+                                    AskOrdar(lowest.Name, Askval, MinQuantity);
+                                    ListMsg.Insert(0, new Memo { Msg = msg });
+                                    var sourceMemo = new BindingSource();
+                                    sourceMemo.DataSource = ListMsg;
+                                    SysHelper.Print(dataGridViewMemo, sourceMemo);
+                                }
+                                catch (Exception ex)
+                                {
+
+                                }
+                            }
+                        }
+                    }
+                    string[] RargsData = new string[] {
+                                  DateTime.Now.ToString(), //時間
+                                  highest.Name, //最高賣價交易所
+                                  Bidval.ToString(), //含手續費賣價
+                                  lowest.Name, //最低買價交易所
+                                  Askval.ToString(),  //含手續費買價
+                                  (Bidval-Askval).ToString()//價差
+                            };
+                    var msgR = string.Format("{0} 目前最高價差： {1}的Bid - {2} 和 {3}的Ask - {4}  目前價差：{5}", RargsData);
+                    SysHelper.Print(labelRange, msgR);
+
+                    Thread.Sleep(1000);
                 }
             });
         }

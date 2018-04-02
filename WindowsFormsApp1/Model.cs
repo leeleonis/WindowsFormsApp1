@@ -46,6 +46,10 @@ namespace WindowsFormsApp1
         /// 交易類型
         /// </summary>
         public string ViewType { get; set; }
+        /// <summary>
+        /// 反轉設定
+        /// </summary>
+        public decimal Range { get; set; }
 
     }
     internal class Info

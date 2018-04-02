@@ -31,7 +31,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.labelName = new System.Windows.Forms.Label();
             this.comboBoxCurrency = new System.Windows.Forms.ComboBox();
-            this.label6 = new System.Windows.Forms.Label();
+            this.labelRange = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -75,7 +75,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.labelName);
             this.splitContainer1.Panel1.Controls.Add(this.comboBoxCurrency);
-            this.splitContainer1.Panel1.Controls.Add(this.label6);
+            this.splitContainer1.Panel1.Controls.Add(this.labelRange);
             this.splitContainer1.Panel1.Controls.Add(this.label5);
             this.splitContainer1.Panel1.Controls.Add(this.label4);
             this.splitContainer1.Panel1.Controls.Add(this.label2);
@@ -113,17 +113,17 @@
             this.comboBoxCurrency.TabIndex = 8;
             this.comboBoxCurrency.Visible = false;
             // 
-            // label6
+            // labelRange
             // 
-            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.labelRange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label6.AutoEllipsis = true;
-            this.label6.Font = new System.Drawing.Font("新細明體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label6.Location = new System.Drawing.Point(6, 582);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(479, 93);
-            this.label6.TabIndex = 7;
-            this.label6.Text = "比價資訊";
+            this.labelRange.AutoEllipsis = true;
+            this.labelRange.Font = new System.Drawing.Font("新細明體", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.labelRange.Location = new System.Drawing.Point(6, 582);
+            this.labelRange.Name = "labelRange";
+            this.labelRange.Size = new System.Drawing.Size(479, 93);
+            this.labelRange.TabIndex = 7;
+            this.labelRange.Text = "比價資訊";
             // 
             // label5
             // 
@@ -397,7 +397,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label labelRange;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridViewTextBoxColumn MemoColumn5;
